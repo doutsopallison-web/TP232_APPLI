@@ -40,7 +40,7 @@ def formulaire():
         if 'edit_id' in session:
             uid = str(session['edit_id'])
             df.loc[df['ID'] == uid, cols] = vals
-            flash("✅ Modification enregistrée !", "info")
+            flash("Modification enregistrée !", "info")
             session.pop('edit_id', None)
             session.pop('edit_data', None)
         else:
@@ -51,7 +51,7 @@ def formulaire():
             if 'mes_ids' not in session:
                 session['mes_ids'] = []
             session['mes_ids'].append(nouveau_id)
-            flash("🚀 Données ajoutées à la base !", "success")
+            flash("Données ajoutées à la base !", "success")
 
         df.to_csv(CSV_FILE, index=False)
         return redirect(url_for('admin'))

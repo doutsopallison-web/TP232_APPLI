@@ -1,44 +1,87 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container py-5">
-    <h2 class="text-white mb-4">📊 Analyses Descriptives</h2>
+    <h2 class="text-white mb-4 text-center">📊 Tableau de Bord des Analyses Descriptives</h2>
 
     {% if stats %}
     <div class="row g-4">
         <div class="col-md-4">
-            <div class="card p-3 shadow text-center">
-                <h6>Répartition Catégories (Nominal)</h6>
+            <div class="card p-3 shadow-sm border-0 h-100">
+                <h6 class="text-dark fw-bold">Répartition des Catégories</h6>
                 <canvas id="chartNominal"></canvas>
+                <div class="mt-3 small text-muted">
+                    <strong>Type :</strong> Variable Qualitative Nominale.<br>
+                    <strong>Analyse :</strong> Visualise la part de marché de chaque catégorie de produit.
+                </div>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card p-3 shadow text-center">
-                <h6>Distribution des Notes (Ordinal)</h6>
+            <div class="card p-3 shadow-sm border-0 h-100">
+                <h6 class="text-dark fw-bold">Distribution des Notes (Satisfaction)</h6>
                 <canvas id="chartOrdinal"></canvas>
+                <div class="mt-3 small text-muted">
+                    <strong>Type :</strong> Variable Qualitative Ordinale.<br>
+                    <strong>Analyse :</strong> Diagramme à bandes comparant des niveaux de satisfaction ordonnés.
+                </div>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card p-3 shadow text-center">
-                <h6>Volume d'Articles (Discret)</h6>
+            <div class="card p-3 shadow-sm border-0 h-100">
+                <h6 class="text-dark fw-bold">Volume d'Articles commandés</h6>
                 <canvas id="chartDiscret"></canvas>
+                <div class="mt-3 small text-muted">
+                    <strong>Type :</strong> Variable Quantitative Discrète.<br>
+                    <strong>Analyse :</strong> Histogramme montrant la fréquence de la quantité d'achat.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card p-4 shadow-sm border-0 bg-light">
+                <h5 class="fw-bold text-primary">Note Méthodologique sur les Représentations</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><strong>Le Diagramme à Bandes (Notes ⭐)</strong></h6>
+                        <p class="text-secondary small">
+                            Utilisé ici pour les données Qualitatives Ordinales. Bien qu'il ressemble à l'histogramme, les bandes sont séparées par des espaces pour souligner que chaque "note" est une catégorie distincte.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><strong>L'Histogramme (Articles)</strong></h6>
+                        <p class="text-secondary small">
+                            Utilisé pour les données Quantitatives. Les barres sont ici collées (ou très proches) pour représenter la distribution de fréquences d'une variable numérique.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Configuration Globale
+        Chart.defaults.color = '#2d3436';
+        Chart.defaults.font.size = 12;
+
         // 1. Camembert
         new Chart(document.getElementById('chartNominal'), {
             type: 'pie',
             data: {
                 labels: {{ stats.labels_cat|safe }},
-                datasets: [{ data: {{ stats.values_cat|safe }}, backgroundColor: ['#6366f1', '#a855f7', '#ec4899'] }]
-            }
+                datasets: [{ 
+                    data: {{ stats.values_cat|safe }}, 
+                    backgroundColor: ['#ebd61eff', '#f97316', '#84cc16', '#e056fd'] 
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom' } } }
         });
 
-        // 2. Histogramme (Barres collées pour l'ordinal)
+        // 2. DIAGRAMME À BANDES (Ordinal) - On laisse des espaces
         new Chart(document.getElementById('chartOrdinal'), {
             type: 'bar',
             data: {
@@ -52,26 +95,36 @@
                         {{ stats.dist_notes.get(4, 0) }},
                         {{ stats.dist_notes.get(5, 0) }}
                     ],
-                    backgroundColor: '#6366f1',
-                    barPercentage: 1.0, // Colle les barres pour faire un histogramme
-                    categoryPercentage: 1.0
+                    backgroundColor: '#686de0',
+                    barPercentage: 0.6, // Bandes fines = Diagramme à bandes
                 }]
-            }
+            },
+            options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
 
-        // 3. Barres de fréquence (Quantitatif)
+        // 3. HISTOGRAMME (Discret) - On colle les barres
         new Chart(document.getElementById('chartDiscret'), {
             type: 'bar',
             data: {
                 labels: {{ stats.labels_art|safe }},
-                datasets: [{ label: 'Fréquence', data: {{ stats.values_art|safe }}, backgroundColor: '#10b981' }]
+                datasets: [{ 
+                    label: 'Fréquence', 
+                    data: {{ stats.values_art|safe }}, 
+                    backgroundColor: '#22a6b3',
+                    barPercentage: 1.0,      // Barres collées = Histogramme
+                    categoryPercentage: 1.0  // Élimine l'espace entre les groupes
+                }]
+            },
+            options: { 
+                scales: { 
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                    x: { title: { display: true, text: 'Quantité d\'articles' } }
+                } 
             }
         });
     </script>
     {% else %}
-    <div class="alert alert-info shadow border-0">
-        🚀 <strong>Bienvenue !</strong> Aucune donnée à analyser pour le moment. Remplissez le formulaire pour générer les graphiques.
-    </div>
+    <div class="alert alert-info">Aucune donnée disponible.</div>
     {% endif %}
 </div>
 {% endblock %}

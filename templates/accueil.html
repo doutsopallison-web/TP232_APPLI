@@ -1,25 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-5 text-center text-white">
-    <h1 class="display-3 fw-bold mb-4">PRO-DATA <span class="text-primary">E-Commerce</span></h1>
-    <p class="lead mb-5">Solution d'intelligence descriptive pour le suivi de satisfaction.</p>
+<div class="container py-5">
+    
+    <div class="text-center text-white mb-5 animate__animated animate__fadeIn">
+        <h1 class="display-3 fw-bold">PRO-DATA <span class="text-primary">E-Commerce</span></h1>
+        <p class="lead opacity-75 mb-4">La plateforme d'analyse descriptive pour vos décisions stratégiques.</p>
+        
+        <a href="#section-formulaire" class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-lg">
+            SOUSCRIRE & ANALYSER
+        </a>
+    </div>
 
-    <div class="card p-5 border-0 bg-white bg-opacity-10 backdrop-blur text-start mb-5">
-        <h3 class="text-primary mb-4">Documentation du Projet</h3>
+    <div class="card p-5 mb-5 shadow-lg border-0 bg-white bg-opacity-10 backdrop-blur text-white">
         <div class="row g-4">
-            <div class="col-md-6">
-                <h5>📌 Objectif</h5>
-                <p class="small opacity-75">Analyser le comportement d'achat et la satisfaction via des variables nominales, ordinales et quantitatives.</p>
+            <div class="col-md-3">
+                <h5 class="text-primary">📊 Statistique</h5>
+                <p class="small opacity-75">Visualisation de données qualitatives nominales et ordinales, quantitative discret via Chart.js.</p>
             </div>
-            <div class="col-md-6">
-                <h5>🛠️ Technologies</h5>
-                <p class="small opacity-75">Flask pour le backend, Pandas pour le moteur statistique et Chart.js pour la visualisation.</p>
+            <div class="col-md-3">
+                <h5 class="text-primary">🛠️ Flexibilité</h5>
+                <p class="small opacity-75">Modification dynamique des entrées via UUID et gestion de sessions.</p>
+            </div>
+            <div class="col-md-3">
+                <h5 class="text-primary">💾 Fiabilité</h5>
+                <p class="small opacity-75">Exportation et traitement des données via le moteur Pandas.</p>
+            </div>
+            <div class="col-md-3">
+                <h5 class="text-primary">🛡️ Sécurité</h5>
+                <p class="small opacity-75">Protection des données par isolation des identifiants clients. Aucun utilisateur ne peut modifier les informations d'un autre</p>
             </div>
         </div>
     </div>
 
-    <a href="/formulaire" class="btn btn-primary btn-lg px-5 shadow-lg fw-bold">
-        ACCÉDER AU FORMULAIRE DE SAISIE
-    </a>
-</div>
+<script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
 {% endblock %}
