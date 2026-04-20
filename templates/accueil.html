@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5 text-center text-white">
+    <h1 class="display-3 fw-bold mb-4">PRO-DATA <span class="text-primary">E-Commerce</span></h1>
+    <p class="lead mb-5">Solution d'intelligence descriptive pour le suivi de satisfaction.</p>
+
+    <div class="card p-5 border-0 bg-white bg-opacity-10 backdrop-blur text-start mb-5">
+        <h3 class="text-primary mb-4">Documentation du Projet</h3>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <h5>📌 Objectif</h5>
+                <p class="small opacity-75">Analyser le comportement d'achat et la satisfaction via des variables nominales, ordinales et quantitatives.</p>
+            </div>
+            <div class="col-md-6">
+                <h5>🛠️ Technologies</h5>
+                <p class="small opacity-75">Flask pour le backend, Pandas pour le moteur statistique et Chart.js pour la visualisation.</p>
+            </div>
+        </div>
+    </div>
+
+    <a href="/formulaire" class="btn btn-primary btn-lg px-5 shadow-lg fw-bold">
+        ACCÉDER AU FORMULAIRE DE SAISIE
+    </a>
+</div>
+{% endblock %}

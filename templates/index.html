@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    
+    <div class="text-center text-white mb-5 animate__animated animate__fadeIn">
+        <h1 class="display-3 fw-bold">PRO-DATA <span class="text-primary">E-Commerce</span></h1>
+        <p class="lead opacity-75 mb-4">La plateforme d'analyse descriptive pour vos décisions stratégiques.</p>
+        
+        <a href="#section-formulaire" class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-lg">
+            🚀 SOUSCRIRE & ANALYSER
+        </a>
+    </div>
+
+    <div class="card p-5 mb-5 shadow-lg border-0 bg-white bg-opacity-10 backdrop-blur text-white">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <h5 class="text-primary">📊 Statistique</h5>
+                <p class="small opacity-75">Visualisation de données nominales et ordinales via Chart.js.</p>
+            </div>
+            <div class="col-md-3">
+                <h5 class="text-primary">🛠️ Flexibilité</h5>
+                <p class="small opacity-75">Modification dynamique des entrées via UUID et gestion de sessions.</p>
+            </div>
+            <div class="col-md-3">
+                <h5 class="text-primary">💾 Fiabilité</h5>
+                <p class="small opacity-75">Exportation et traitement des données via le moteur Pandas.</p>
+            </div>
+            <div class="col-md-3">
+                <h5 class="text-primary">🛡️ Sécurité</h5>
+                <p class="small opacity-75">Protection des données par isolation des identifiants clients.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-formulaire" class="row justify-content-center py-5">
+        <div class="col-lg-7">
+            <div class="card p-4 shadow-lg border-0">
+                <div class="text-center mb-4">
+                    <span class="badge bg-primary-soft text-primary mb-2">Formulaire de souscription</span>
+                    <h3>{% if edit_data %}Mise à jour de l'analyse{% else %}Nouvel Enregistrement{% endif %}</h3>
+                </div>
+                
+                <form method="POST">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold small">Nom du Client</label>
+                            <input type="text" name="nom" class="form-control" value="{{ edit_data.Nom if edit_data else '' }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small">Quantité</label>
+                            <input type="number" name="nb_articles" class="form-control" min="1" value="{{ edit_data.Nb_Articles if edit_data else '1' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Catégorie</label>
+                            <select name="categorie" class="form-select">
+                                <option value="Alimentaire">Alimentaire</option>
+                                <option value="Maison">Maison & Déco</option>
+                                <option value="Electronique">Électronique</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Note</label>
+                            <select name="note" class="form-select">
+                                <option value="1">1 ⭐</option>
+                                <option value="2">2 ⭐</option>
+                                <option value="3">3 ⭐</option>
+                                <option value="4">4 ⭐</option>
+                                <option value="5">5 ⭐</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">VALIDER LA SOUSCRIPTION</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+{% endblock %}

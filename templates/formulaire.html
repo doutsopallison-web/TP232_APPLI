@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card p-4 shadow-lg border-0 animate__animated animate__fadeInUp">
+                <div class="text-center mb-4 border-bottom pb-3">
+                    <h2 class="fw-bold text-dark">
+                        {% if edit_data %}📝 Modification{% else %}📥 Nouvelle Saisie{% endif %}
+                    </h2>
+                    <p class="text-muted small">Collecte de données descriptives E-Commerce</p>
+                </div>
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nom du Client</label>
+                        <input type="text" name="nom" class="form-control form-control-lg" 
+                               value="{{ edit_data.Nom if edit_data else '' }}" required placeholder="Ex: M. DURAND">
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Catégorie</label>
+                            <select name="categorie" class="form-select">
+                                <option value="Alimentaire" {% if edit_data and edit_data.Categorie == 'Alimentaire' %}selected{% endif %}>Alimentaire</option>
+                                <option value="Maison" {% if edit_data and edit_data.Categorie == 'Maison' %}selected{% endif %}>Maison & Déco</option>
+                                <option value="Electronique" {% if edit_data and edit_data.Categorie == 'Electronique' %}selected{% endif %}>Électronique</option>
+                                <option value="Mode" {% if edit_data and edit_data.Categorie == 'Mode' %}selected{% endif %}>Mode & Beauté</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nombre d'articles</label>
+                            <input type="number" name="nb_articles" class="form-control" min="1" 
+                                   value="{{ edit_data.Nb_Articles if edit_data else '1' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Note de satisfaction</label>
+                            <select name="note" class="form-select text-warning fw-bold">
+                                {% for i in range(1, 6) %}
+                                <option value="{{ i }}" {% if edit_data and edit_data.Note|int == i %}selected{% endif %}>
+                                    {{ i }} ⭐ {% if i == 5 %}(Excellent){% elif i == 1 %}(Médiocre){% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold d-block">Recommanderiez-vous ?</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="recommande" value="Oui" id="recoOui" 
+                                       {% if not edit_data or edit_data.Recommandation == 'Oui' %}checked{% endif %}>
+                                <label class="btn btn-outline-success" for="recoOui">OUI</label>
+                                
+                                <input type="radio" class="btn-check" name="recommande" value="Non" id="recoNon" 
+                                       {% if edit_data and edit_data.Recommandation == 'Non' %}checked{% endif %}>
+                                <label class="btn btn-outline-danger" for="recoNon">NON</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Commentaires additionnels</label>
+                        <textarea name="commentaire" class="form-control" rows="3" 
+                                  placeholder="Précisez votre avis...">{{ edit_data.Commentaire if edit_data else '' }}</textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow">
+                            {% if edit_data %}METTRE À JOUR LES DONNÉES{% else %}ENREGISTRER DANS LE CSV{% endif %}
+                        </button>
+                        <a href="/admin" class="btn btn-link btn-sm text-decoration-none text-muted">Annuler et voir la base</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

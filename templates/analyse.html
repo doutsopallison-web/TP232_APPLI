@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-white mb-4">📊 Analyses Descriptives</h2>
+
+    {% if stats %}
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card p-3 shadow text-center">
+                <h6>Répartition Catégories (Nominal)</h6>
+                <canvas id="chartNominal"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 shadow text-center">
+                <h6>Distribution des Notes (Ordinal)</h6>
+                <canvas id="chartOrdinal"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 shadow text-center">
+                <h6>Volume d'Articles (Discret)</h6>
+                <canvas id="chartDiscret"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 1. Camembert
+        new Chart(document.getElementById('chartNominal'), {
+            type: 'pie',
+            data: {
+                labels: {{ stats.labels_cat|safe }},
+                datasets: [{ data: {{ stats.values_cat|safe }}, backgroundColor: ['#6366f1', '#a855f7', '#ec4899'] }]
+            }
+        });
+
+        // 2. Histogramme (Barres collées pour l'ordinal)
+        new Chart(document.getElementById('chartOrdinal'), {
+            type: 'bar',
+            data: {
+                labels: ['1⭐', '2⭐', '3⭐', '4⭐', '5⭐'],
+                datasets: [{
+                    label: 'Clients',
+                    data: [
+                        {{ stats.dist_notes.get(1, 0) }},
+                        {{ stats.dist_notes.get(2, 0) }},
+                        {{ stats.dist_notes.get(3, 0) }},
+                        {{ stats.dist_notes.get(4, 0) }},
+                        {{ stats.dist_notes.get(5, 0) }}
+                    ],
+                    backgroundColor: '#6366f1',
+                    barPercentage: 1.0, // Colle les barres pour faire un histogramme
+                    categoryPercentage: 1.0
+                }]
+            }
+        });
+
+        // 3. Barres de fréquence (Quantitatif)
+        new Chart(document.getElementById('chartDiscret'), {
+            type: 'bar',
+            data: {
+                labels: {{ stats.labels_art|safe }},
+                datasets: [{ label: 'Fréquence', data: {{ stats.values_art|safe }}, backgroundColor: '#10b981' }]
+            }
+        });
+    </script>
+    {% else %}
+    <div class="alert alert-info shadow border-0">
+        🚀 <strong>Bienvenue !</strong> Aucune donnée à analyser pour le moment. Remplissez le formulaire pour générer les graphiques.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
