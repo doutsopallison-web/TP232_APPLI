@@ -113,5 +113,5 @@ def charger(uid):
         session['edit_data'] = l.to_dict()
     return redirect(url_for('home'))
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=10000)
+if  __name__ == "__main__":
+    app.run(host='0.0.0.0', port=10000)
