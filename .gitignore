@@ -1,1 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# Données lourdes
 donnee/
+*.zip
+*.rar
+
+# Environnement
+.env
