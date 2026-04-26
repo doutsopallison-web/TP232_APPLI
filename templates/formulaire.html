@@ -14,14 +14,14 @@
                 <form method="POST">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nom du Client</label>
-                        <input type="text" name="nom" class="form-control form-control-lg" 
-                               value="{{ edit_data.Nom if edit_data else '' }}" required placeholder="Ex: M. DURAND">
+                        <input type="text" name="Nom" class="form-control form-control-lg" 
+                               value="{{ edit_data.Nom if edit_data else '' }}" required placeholder="Ex: Doutsop">
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Catégorie</label>
-                            <select name="categorie" class="form-select">
+                            <select name="Categorie" class="form-select">
                                 <option value="Alimentaire" {% if edit_data and edit_data.Categorie == 'Alimentaire' %}selected{% endif %}>Alimentaire</option>
                                 <option value="Maison" {% if edit_data and edit_data.Categorie == 'Maison' %}selected{% endif %}>Maison & Déco</option>
                                 <option value="Electronique" {% if edit_data and edit_data.Categorie == 'Electronique' %}selected{% endif %}>Électronique</option>
@@ -30,7 +30,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Nombre d'articles</label>
-                            <input type="number" name="nb_articles" class="form-control" min="1" 
+                            <input type="number" name="Nb_Articles" class="form-control" min="1" 
                                    value="{{ edit_data.Nb_Articles if edit_data else '1' }}" required>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Note de satisfaction</label>
-                            <select name="note" class="form-select text-warning fw-bold">
+                            <select name="Note" class="form-select text-warning fw-bold">
                                 {% for i in range(1, 6) %}
                                 <option value="{{ i }}" {% if edit_data and edit_data.Note|int == i %}selected{% endif %}>
                                     {{ i }} ⭐ {% if i == 5 %}(Excellent){% elif i == 1 %}(Médiocre){% endif %}
@@ -49,11 +49,11 @@
                         <div class="col-md-6">
                             <label class="form-label fw-bold d-block">Recommanderiez-vous ?</label>
                             <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="recommande" value="Oui" id="recoOui" 
+                                <input type="radio" class="btn-check" name="Recommandation" value="Oui" id="recoOui" 
                                        {% if not edit_data or edit_data.Recommandation == 'Oui' %}checked{% endif %}>
                                 <label class="btn btn-outline-success" for="recoOui">OUI</label>
                                 
-                                <input type="radio" class="btn-check" name="recommande" value="Non" id="recoNon" 
+                                <input type="radio" class="btn-check" name="Recommandation" value="Non" id="recoNon" 
                                        {% if edit_data and edit_data.Recommandation == 'Non' %}checked{% endif %}>
                                 <label class="btn btn-outline-danger" for="recoNon">NON</label>
                             </div>
@@ -62,7 +62,7 @@
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">Commentaires additionnels</label>
-                        <textarea name="commentaire" class="form-control" rows="3" 
+                        <textarea name="Commentaire" class="form-control" rows="3" 
                                   placeholder="Précisez votre avis...">{{ edit_data.Commentaire if edit_data else '' }}</textarea>
                     </div>
 

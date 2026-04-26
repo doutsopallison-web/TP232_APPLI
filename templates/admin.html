@@ -6,7 +6,38 @@
 
 <div class="card shadow-sm overflow-hidden">
     <div class="table-responsive">
-        {{ tableau | safe }}
+        <table class="table text-center mb-0">
+            <thead style="background-color: #7c4dff; color: white;">
+                <tr>
+                    <th>Nom</th>
+                    <th>Categorie</th>
+                    <th>Note</th>
+                    <th>Nb_Articles</th>
+                    <th>Recommandation</th>
+                    <th>Commentaire</th>
+                    <th style="min-width: 180px;">Actions</th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for p in produits %}
+                <tr>
+                    <td>{{ p.Nom}}</td>
+                    <td>{{ p.Ctegorie }}</td>
+                    <td>{{ p.Note }}</td>
+                    <td>{{ p.Nb_Articles }}</td>
+                    <td>{{ p.Recommandation }}</td>
+                    <td>{{ p.Commentaire }}</td>
+                    <td>
+                        {% if p.Id in mes_ids %}
+                            <a href="{{ url_for('charger', uid=p.Id) }}" class="btn btn-sm btn-primary me-2">Modifier</a><a href="{{ url_for('supprimer', uid=p.Id) }}" class="btn btn-sm btn-danger" onclick=" return confirm('Voulez-vous supprimer ces donnees ?')">Supprimer</a>
+                        {% else %}
+                            <span class="badge bg-secondary opacity-50"> Lecture uniquement</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>            
     </div>
 </div>
 {% endblock %}

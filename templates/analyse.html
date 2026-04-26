@@ -39,7 +39,36 @@
         </div>
     </div>
 
-    <div class="row mt-5">
+    <p></p>
+    <table border="1" style="width:100%; border-collapse: collapse; text-align: center;">
+    <tr style="background-color: #da119dff;">
+        <th>Indicateur</th>
+        <th>Nb_Articles (X)</th>
+        <th>Note (Y)</th>
+    </tr>
+    <tr>
+        <td><strong>Moyenne</strong></td>
+        <td>{{ stats.mean_x|round(2) }}</td>
+        <td>{{ stats.mean_y|round(2) }}</td>
+    </tr>
+    <tr>
+        <td><strong>Variance</strong></td>
+        <td>{{ stats.var_x|round(2) }}</td>
+        <td>{{ stats.var_y|round(2) }}</td>
+    </tr>
+    <tr>
+        <td><strong>Écart-type</strong></td>
+        <td>{{ stats.std_x|round(2) }}</td>
+        <td>{{ stats.std_y|round(2) }}</td>
+    </tr>
+</table>
+
+<div style="margin-top: 20px; padding: 10px; border: 1px solid #000;">
+    <p><strong>Corrélation :</strong> {{ stats.correlation|round(3) }}</p>
+    <p><strong>Équation de régression :</strong> y = {{ stats.a|round(3) }}x + {{ stats.b|round(3) }}</p>
+</div>
+
+<div class="row mt-5">
         <div class="col-12">
             <div class="card p-4 shadow-sm border-0 bg-light">
                 <h5 class="fw-bold text-primary">Note Méthodologique sur les Représentations</h5>
