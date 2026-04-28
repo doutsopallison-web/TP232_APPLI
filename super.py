@@ -10,11 +10,15 @@ import numpy as np
 app=Flask(__name__)
 app.secret_key="une clef secrete 123"
 
-if os.environ.get('postgresql://base_de_donnees_t31q_user:Lit2Kmi0ijUOToGHKDS3Ud1dbH8izTle@dpg-d7o50r3bc2fs7396o3s0-a.frankfurt-postgres.render.com/base_de_donnees_t31q'):
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('postgresql://base_de_donnees_t31q_user:Lit2Kmi0ijUOToGHKDS3Ud1dbH8izTle@dpg-d7o50r3bc2fs7396o3s0-a.frankfurt-postgres.render.com/base_de_donnees_t31q')
+uri=os.environ.get('DATABASE_URL')
+
+if uri:
+    if uri.startswith("postgres://"):
+        uri=uri.replace("postgres://","postgresql://",1)
+    app.config['SQLALCHEMY_DATABASE_URI']=uri
 else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///donnees.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///donnees.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
 
 # On définit la structure (le modèle) qui remplace ton init_csv()
@@ -49,16 +53,17 @@ def formulaire():
     
     if request.method == "POST":
         # On recupere les donneesde chaque Utilisateur
+        total_actuel= Utilisateur.query.count()
+        total_utilisateur= db.session.query(func.count(Utilisateur.Ip.distinct())).scalar()
        
         if 'edit_id' not in session:
-            total_actuel= Utilisateur.query.count()
-            total_utilisateur= db.session.query(func.count(Utilisateur.Ip.distinct())).scalar()
-        if total_actuel>3:
-            flash("Attention plus d'enregistrement possible la limite est atteinte 1000","Attention")
-            return render_template("formulaire.html", edit_data=edit_data)
-        if total_utilisateur>2:
-            flash("Plus d'utilisateurs autorises","attention")
-            return render_template("formulaire.html", edit_data=edit_data)
+           
+            if total_actuel>3:
+                flash("Attention plus d'enregistrement possible la limite est atteinte 1000","Attention")
+                return render_template("formulaire.html", edit_data=edit_data)
+            if total_utilisateur>2:
+                flash("Plus d'utilisateurs autorises","attention")
+                return render_template("formulaire.html", edit_data=edit_data)
         nom=request.form.get("Nom")
         categorie=request.form.get("Categorie")
         note=int(request.form.get("Note",0))
@@ -222,4 +227,4 @@ def supprimer(uid):
     return redirect(url_for('admin'))
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=10000)
+    app.run(host='0.0.0.0', port=10000)
