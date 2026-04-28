@@ -44,13 +44,7 @@ def home():
 @app.route("/formulaire", methods=["GET", "POST"])
 def formulaire():
     edit_data = session.get('edit_data')
-    quantite=int(request.form.get("Nb_Articles",0))
-    
-    if quantite>100:
-        flash("La quantite d'articles maximale est de 100","attention")
-        quantite=100
-        
-    
+       
     if request.method == "POST":
         # On recupere les donneesde chaque Utilisateur
         total_actuel= Utilisateur.query.count()
@@ -62,16 +56,29 @@ def formulaire():
         nb_articles=int(request.form.get("Nb_Articles",0))
         recommande=request.form.get("Recommandation")
         commentaire=request.form.get("Commentaire")
+        
+        
+        if nb_articles>100:
+            flash("La quantite d'articles maximale est de 100","attention")
+            nb_articles=100
            
         if 'edit_id' not in session:
            
-            if total_actuel>3:
-                flash("Attention plus d'enregistrement possible la limite est atteinte 1000","Attention")
-                return render_template("formulaire.html", edit_data=edit_data)
-            if total_utilisateur>2:
-                flash("Plus d'utilisateurs autorises","attention")
-                return render_template("formulaire.html", edit_data=edit_data)
-       
+            if total_actuel>=3 or total_utilisateur>=2:
+                if total_actuel>=3:
+                    flash("Attention plus d'enregistrement possible la limite est atteinte 1000","Attention")
+                if total_utilisateur>=2:
+                    flash("Plus d'utilisateurs autorises","attention")
+    
+                temp_data={
+                    'Nom':nom,
+                    'Categorie':categorie,
+                    'Note':note,
+                    'Nb_Articles':nb_articles,
+                    'Recommandation':recommande,
+                    'Commentaire':commentaire
+                }
+            return render_template("formulaire.html",edit_data=edit_data)
         
         # Modifier les donnees
         if 'edit_id' in session:
