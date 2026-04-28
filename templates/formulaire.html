@@ -14,7 +14,7 @@
                 <form method="POST">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nom du Client</label>
-                        <input type="text" name="Nom" class="form-control form-control-lg" 
+                        <input type="text" name="Nom" class="form-control form-control-lg" min="0" max="3"
                                value="{{ edit_data.Nom if edit_data else '' }}" required placeholder="Ex: Doutsop">
                     </div>
 

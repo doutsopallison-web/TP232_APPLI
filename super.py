@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # On définit la structure (le modèle) qui remplace ton init_csv()
-class Produit(db.Model):
+class Utilisateur(db.Model):
     Id = db.Column(db.String(8), primary_key=True)
     Nom = db.Column(db.String(100))
     Ip=db.Column(db.String(20))
@@ -48,9 +48,18 @@ def formulaire():
         
     
     if request.method == "POST":
-        # On recupere les donneesde chaque produit
+        # On recupere les donneesde chaque Utilisateur
+       
+        if 'edit_id' not in session:
+            total_actuel= Utilisateur.query.count()
+            total_utilisateur= db.session.query(func.count(Utilisateur.Ip.distinct())).scalar()
+        if total_actuel>3:
+            flash("Attention plus d'enregistrement possible la limite est atteinte 1000","Attention")
+            return render_template("formulaire.html", edit_data=edit_data)
+        if total_utilisateur>2:
+            flash("Plus d'utilisateurs autorises","attention")
+            return render_template("formulaire.html", edit_data=edit_data)
         nom=request.form.get("Nom")
-        ip=request.form.get("Ip")
         categorie=request.form.get("Categorie")
         note=int(request.form.get("Note",0))
         nb_articles=int(request.form.get("Nb_Articles",0))
@@ -61,15 +70,14 @@ def formulaire():
         # Modifier les donnees
         if 'edit_id' in session:
             uid=session['edit_id']
-            produit=Produit.query.get(uid)
-            if produit:
-                produit.Nom=nom
-                produit.Ip=ip
-                produit.Categorie=categorie
-                produit.Note=note
-                produit.Nb_Articles=nb_articles
-                produit.Recommandation=recommande
-                produit.Commentaire=commentaire
+            utilisateur=Utilisateur.query.get(uid)
+            if utilisateur:
+                utilisateur.Nom=nom
+                utilisateur.Categorie=categorie
+                utilisateur.Note=note
+                utilisateur.Nb_Articles=nb_articles
+                utilisateur.Recommandation=recommande
+                utilisateur.Commentaire=commentaire
             flash("Modification reussie !","info")
             session.pop('edit_id',None)
             session.pop('edit_data',None)
@@ -77,7 +85,7 @@ def formulaire():
         else: # Nouvel ajout
             nouvelle_ip=request.remote_addr
             nouveau_id=str(uuid.uuid4())[:8]
-            nouveau_produit=Produit(
+            nouveau_utilisateur=Utilisateur(
                 Id=nouveau_id,
                 Nom=nom,
                 Ip=nouvelle_ip,
@@ -87,13 +95,13 @@ def formulaire():
                 Recommandation=recommande,
                 Commentaire=commentaire
             )
-            db.session.add(nouveau_produit)
+            db.session.add(nouveau_utilisateur)
             
             # On conserve l'id pour les modifications eventuelles
             if 'mes_ids' not in session:
                 session['mes_ids']=[]
             session['mes_ids'].append(nouveau_id)
-            flash("Produit ajoute a la base PostgreSQL !", "success")
+            flash("Utilisateur ajoute a la base PostgreSQL !", "success")
         
     
         # On valide l'ecriture dans le fichier .db
@@ -106,7 +114,7 @@ def formulaire():
 @app.route("/analyse")
 def analyse():
     # On récupère les données SQL et on les transforme en DataFrame Pandas
-    df = pd.read_sql(db.session.query(Produit).statement, db.engine)
+    df = pd.read_sql(db.session.query(Utilisateur).statement, db.engine)
     
     # Sécurité si le fichier est vide
     if df.empty:
@@ -178,17 +186,16 @@ def analyse():
 
 @app.route("/admin")
 def admin():
-    df=pd.read_sql(db.session.query(Produit).statement, db.engine)
+    df=pd.read_sql(db.session.query(Utilisateur).statement, db.engine)
     mes_ids = session.get('mes_ids', [])
-    produits=df.to_dict(orient='records')
-    Total_produits=Produit.query.count()
-    Nombre_Utilisateurs=db.session.query(func.count(Produit.Ip.distinct())).scalar()
-        
-    return render_template("admin.html", produits=produits, mes_ids=mes_ids,Total=Total_produits,Utilisateurs=Nombre_Utilisateurs)
+    utilisateurs=df.to_dict(orient='records')
+    Enr=Utilisateur.query.count()
+    u=db.session.query(func.count(Utilisateur.Ip.distinct())).scalar()
+    return render_template("admin.html", utilisateurs=utilisateurs, mes_ids=mes_ids,Enregistrement=Enr,Utilisateur=u)
 
 @app.route("/charger/<uid>")
 def charger(uid):
-    df=pd.read_sql(db.session.query(Produit).statement, db.engine)
+    df=pd.read_sql(db.session.query(Utilisateur).statement, db.engine)
     if uid in session.get('mes_ids', []):
         l = df[df['Id'] == uid].iloc[0]
         session['edit_id'] = uid
@@ -200,7 +207,7 @@ def supprimer(uid):
     # verifie sil'id est dans la session actuelle
     mes_ids= session.get('mes_ids',[])
     if uid in mes_ids:
-        produit= Produit.query.get(uid)
+        produit= Utilisateur.query.get(uid)
         if produit:
             db.session.delete(produit)
             db.session.commit()
@@ -208,11 +215,11 @@ def supprimer(uid):
             # retirer la liste en session
             mes_ids.remove(uid)
             session['mes_ids']= mes_ids
-            flash("Produit supprime avec succes !","danger")
+            flash("Utilisateur supprime avec succes !","danger")
     else:
         flash("Vous n'avez pas l'autorisation de supprimer ces donnees","danger")
     
     return redirect(url_for('admin'))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port=10000)
+    app.run(debug=True)

@@ -19,36 +19,42 @@
                 </tr>
             </thread>
             <tbody>
-                {% for p in produits %}
+                {% for U in utilisateurs %}
                 <tr>
-                    <td>{{ p.Nom}}</td>
-                    <td>{{p.Ip}}</td>
-                    <td>{{ p.Categorie }}</td>
-                    <td>{{ p.Note }}</td>
-                    <td>{{ p.Nb_Articles }}</td>
-                    <td>{{ p.Recommandation }}</td>
-                    <td>{{ p.Commentaire }}</td>
+                    <td>{{ U.Nom}}</td>
+                    <td>{{ U.Categorie }}</td>
+                    <td>{{ U.Note }}</td>
+                    <td>{{ U.Nb_Articles }}</td>
+                    <td>{{ U.Recommandation }}</td>
+                    <td>{{ U.Commentaire }}</td>
                     <td>
-                        {% if p.Id in mes_ids %}
-                            <a href="{{ url_for('charger', uid=p.Id) }}" class="btn btn-sm btn-primary me-2">Modifier</a><a href="{{ url_for('supprimer', uid=p.Id) }}" class="btn btn-sm btn-danger" onclick=" return confirm('Voulez-vous supprimer ces donnees ?')">Supprimer</a>
+                        {% if U.Id in mes_ids %}
+                            <a href="{{ url_for('charger', uid=U.Id) }}" class="btn btn-sm btn-primary me-2">Modifier</a><a href="{{ url_for('supprimer', uid=U.Id) }}" class="btn btn-sm btn-danger" onclick=" return confirm('Voulez-vous supprimer ces donnees ?')">Supprimer</a>
                         {% else %}
                             <span class="badge bg-secondary opacity-50"> Lecture uniquement</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
+               
             </tbody>
         </table>            
     </div>
 </div>
-<div class="stats-container">
-    <div class="stat-card">
-        <span class="stat-label">Utilisateurs : </span>
-        <span class="stat-value">{{Nombre_Utilisateurs}}</span>
+<p></p>
+ <div style="position: sticky; top: 0; z-index: 999; background-color: white; padding: 10px; margin-bottom: 20px; border-radius: 0 0 10px 10px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+    
+    <div style="color: #333; font-family: sans-serif; text-align: center;">
+        <strong style="text-transform: uppercase; font-size: 0.7rem; color: #666; display: block;">Enregistrements</strong> 
+        <span style="font-size: 1.2rem; font-weight: bold;">{{ Enregistrement }} / 1000</span>
     </div>
-    <div class=stat-card>
-        <span class="stat-label">Total :</span>
-        <span class ="stat-value">{{Total_produits}}/1000</span>
+
+    <div style="width: 1px; height: 30px; background-color: #ddd;"></div>
+
+    <div style="color: #333; font-family: sans-serif; text-align: center;">
+        <strong style="text-transform: uppercase; font-size: 0.7rem; color: #666; display: block;">Utilisateurs</strong> 
+        <span style="font-size: 1.2rem; font-weight: bold;">{{ Utilisateur }} / 300</span>
     </div>
-</div>   
+
+</div>
 {% endblock %}
