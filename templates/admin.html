@@ -22,7 +22,8 @@
                 {% for p in produits %}
                 <tr>
                     <td>{{ p.Nom}}</td>
-                    <td>{{ p.Ctegorie }}</td>
+                    <td>{{p.Ip}}</td>
+                    <td>{{ p.Categorie }}</td>
                     <td>{{ p.Note }}</td>
                     <td>{{ p.Nb_Articles }}</td>
                     <td>{{ p.Recommandation }}</td>
@@ -40,4 +41,14 @@
         </table>            
     </div>
 </div>
+<div class="stats-container">
+    <div class="stat-card">
+        <span class="stat-label">Utilisateurs : </span>
+        <span class="stat-value">{{Nombre_Utilisateurs}}</span>
+    </div>
+    <div class=stat-card>
+        <span class="stat-label">Total :</span>
+        <span class ="stat-value">{{Total_produits}}/1000</span>
+    </div>
+</div>   
 {% endblock %}

@@ -1,6 +1,7 @@
 from statistics import covariance
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 import pandas as pd
 import os
 import uuid
@@ -20,6 +21,7 @@ db = SQLAlchemy(app)
 class Produit(db.Model):
     Id = db.Column(db.String(8), primary_key=True)
     Nom = db.Column(db.String(100))
+    Ip=db.Column(db.String(20))
     Categorie = db.Column(db.String(50))
     Note = db.Column(db.Integer)
     Nb_Articles = db.Column(db.Integer)
@@ -38,15 +40,23 @@ def home():
 @app.route("/formulaire", methods=["GET", "POST"])
 def formulaire():
     edit_data = session.get('edit_data')
+    quantite=int(request.form.get("Nb_Articles",0))
+    
+    if quantite>100:
+        flash("La quantite d'articles maximale est de 100","attention")
+        quantite=100
+        
     
     if request.method == "POST":
         # On recupere les donneesde chaque produit
         nom=request.form.get("Nom")
+        ip=request.form.get("Ip")
         categorie=request.form.get("Categorie")
         note=int(request.form.get("Note",0))
         nb_articles=int(request.form.get("Nb_Articles",0))
         recommande=request.form.get("Recommandation")
         commentaire=request.form.get("Commentaire")
+        
         
         # Modifier les donnees
         if 'edit_id' in session:
@@ -54,6 +64,7 @@ def formulaire():
             produit=Produit.query.get(uid)
             if produit:
                 produit.Nom=nom
+                produit.Ip=ip
                 produit.Categorie=categorie
                 produit.Note=note
                 produit.Nb_Articles=nb_articles
@@ -64,10 +75,12 @@ def formulaire():
             session.pop('edit_data',None)
 
         else: # Nouvel ajout
+            nouvelle_ip=request.remote_addr
             nouveau_id=str(uuid.uuid4())[:8]
             nouveau_produit=Produit(
                 Id=nouveau_id,
                 Nom=nom,
+                Ip=nouvelle_ip,
                 Categorie=categorie,
                 Note=note,
                 Nb_Articles=nb_articles,
@@ -80,8 +93,9 @@ def formulaire():
             if 'mes_ids' not in session:
                 session['mes_ids']=[]
             session['mes_ids'].append(nouveau_id)
-            flash("Produit ajoute a la base SQL !", "success")
-            
+            flash("Produit ajoute a la base PostgreSQL !", "success")
+        
+    
         # On valide l'ecriture dans le fichier .db
         db.session.commit()
         return redirect(url_for('admin'))
@@ -167,7 +181,10 @@ def admin():
     df=pd.read_sql(db.session.query(Produit).statement, db.engine)
     mes_ids = session.get('mes_ids', [])
     produits=df.to_dict(orient='records')
-    return render_template("admin.html", produits=produits, mes_ids=mes_ids)
+    Total_produits=Produit.query.count()
+    Nombre_Utilisateurs=db.session.query(func.count(Produit.Ip.distinct())).scalar()
+        
+    return render_template("admin.html", produits=produits, mes_ids=mes_ids,Total=Total_produits,Utilisateurs=Nombre_Utilisateurs)
 
 @app.route("/charger/<uid>")
 def charger(uid):
@@ -198,4 +215,4 @@ def supprimer(uid):
     return redirect(url_for('admin'))
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=10000)
+    app.run(host="0.0.0.0",port=10000)

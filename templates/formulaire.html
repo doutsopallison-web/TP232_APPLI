@@ -30,7 +30,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Nombre d'articles</label>
-                            <input type="number" name="Nb_Articles" class="form-control" min="1" 
+                            <input type="number" name="Nb_Articles" class="form-control" min="1" max="100"
                                    value="{{ edit_data.Nb_Articles if edit_data else '1' }}" required>
                         </div>
                     </div>
@@ -77,4 +77,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
