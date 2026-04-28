@@ -1,5 +1,6 @@
 flask
 flask_sqlalchemy
-numpy
 pandas
+numpy
 gunicorn
+psycopg2-binary

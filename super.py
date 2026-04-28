@@ -9,8 +9,10 @@ import numpy as np
 app=Flask(__name__)
 app.secret_key="une clef secrete 123"
 
-# On définit le chemin de la base de données (un fichier .db)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///donnees.db'
+if os.environ.get('postgresql://base_de_donnees_t31q_user:Lit2Kmi0ijUOToGHKDS3Ud1dbH8izTle@dpg-d7o50r3bc2fs7396o3s0-a.frankfurt-postgres.render.com/base_de_donnees_t31q'):
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('postgresql://base_de_donnees_t31q_user:Lit2Kmi0ijUOToGHKDS3Ud1dbH8izTle@dpg-d7o50r3bc2fs7396o3s0-a.frankfurt-postgres.render.com/base_de_donnees_t31q')
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///donnees.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -195,5 +197,5 @@ def supprimer(uid):
     
     return redirect(url_for('admin'))
 
-if  __name__ == "__main__":
-    app.run(host='0.0.0.0', port=10000)
+if __name__ == "__main__":
+    app.run(debug=True)
