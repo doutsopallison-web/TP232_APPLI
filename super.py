@@ -55,7 +55,14 @@ def formulaire():
         # On recupere les donneesde chaque Utilisateur
         total_actuel= Utilisateur.query.count()
         total_utilisateur= db.session.query(func.count(Utilisateur.Ip.distinct())).scalar()
-       
+    
+        nom=request.form.get("Nom")
+        categorie=request.form.get("Categorie")
+        note=int(request.form.get("Note",0))
+        nb_articles=int(request.form.get("Nb_Articles",0))
+        recommande=request.form.get("Recommandation")
+        commentaire=request.form.get("Commentaire")
+           
         if 'edit_id' not in session:
            
             if total_actuel>3:
@@ -64,13 +71,7 @@ def formulaire():
             if total_utilisateur>2:
                 flash("Plus d'utilisateurs autorises","attention")
                 return render_template("formulaire.html", edit_data=edit_data)
-        nom=request.form.get("Nom")
-        categorie=request.form.get("Categorie")
-        note=int(request.form.get("Note",0))
-        nb_articles=int(request.form.get("Nb_Articles",0))
-        recommande=request.form.get("Recommandation")
-        commentaire=request.form.get("Commentaire")
-        
+       
         
         # Modifier les donnees
         if 'edit_id' in session:
@@ -227,4 +228,4 @@ def supprimer(uid):
     return redirect(url_for('admin'))
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=10000)
+    app.run(host='0.0.0.0',port=10000)
