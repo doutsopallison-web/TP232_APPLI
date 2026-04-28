@@ -67,18 +67,11 @@ def formulaire():
             if total_actuel>=3 or total_utilisateur>=2:
                 if total_actuel>=3:
                     flash("Attention plus d'enregistrement possible la limite est atteinte 1000","Attention")
+                    return redirect(url_for('admin'))
                 if total_utilisateur>=2:
                     flash("Plus d'utilisateurs autorises","attention")
+                    return redirect(url_for('admin'))
     
-                temp_data={
-                    'Nom':nom,
-                    'Categorie':categorie,
-                    'Note':note,
-                    'Nb_Articles':nb_articles,
-                    'Recommandation':recommande,
-                    'Commentaire':commentaire
-                }
-            return render_template("formulaire.html",edit_data=edit_data)
         
         # Modifier les donnees
         if 'edit_id' in session:
