@@ -10,14 +10,10 @@ import numpy as np
 app=Flask(__name__)
 app.secret_key="une clef secrete 123"
 
-uri=os.environ.get('DATABASE_URL')
-
-if uri:
-    if uri.startswith("postgres://"):
-        uri=uri.replace("postgres://","postgresql://",1)
-    app.config['SQLALCHEMY_DATABASE_URI']=uri
-else:
-    app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///donnees.db'
+# On force l'utilisation du fichier local SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///donnees.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
 
