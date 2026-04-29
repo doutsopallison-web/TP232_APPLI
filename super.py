@@ -44,6 +44,8 @@ def formulaire():
     edit_data = session.get('edit_data')
        
     if request.method == "POST":
+        nouvelle_ip=request.remote_addr
+        email=request.form.get("Email")
         
         # On recupere les donneesde chaque Utilisateur
         total_actuel= Utilisateur.query.count()
@@ -57,8 +59,13 @@ def formulaire():
                 flash("Limite d'enregistrements atteinte","danger")
                 return redirect (url_for('admin'))
             if total_utilisateur>=3:
-                flash("Limite d'utilisateurs atteinte","danger")
-                return redirect (url_for('admin'))
+                deja_connu=Utilisateur.query.filter(
+                    (Utilisateur.Ip==nouvelle_ip) | (Utilisateur.Email==email)
+                ).first()
+                
+                if  not deja_connu:
+                    flash("Limite d'utilisateurs atteinte","danger")
+                    return redirect (url_for('admin'))
     
         nom=request.form.get("Nom")
         email=request.form.get("Email")
