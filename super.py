@@ -22,7 +22,6 @@ with app.app_context():
 class Utilisateur(db.Model):
     Id = db.Column(db.String(8), primary_key=True)
     Nom = db.Column(db.String(100))
-    Ip=db.Column(db.String(20))
     Email=db.Column(db.String(60))
     Categorie = db.Column(db.String(50))
     Note = db.Column(db.Integer)
@@ -44,28 +43,26 @@ def formulaire():
     edit_data = session.get('edit_data')
        
     if request.method == "POST":
-        nouvelle_ip=request.remote_addr
         email=request.form.get("Email")
+        
+        deja_connu=Utilisateur.query.filter(
+            (Utilisateur.Email==email)
+        ).first()
         
         # On recupere les donneesde chaque Utilisateur
         total_actuel= Utilisateur.query.count()
-        nb_ip=db.session.query(func.count(Utilisateur.Ip.distinct())).scalar()
-        nb_email=db.session.query(func.count(Utilisateur.Email.distinct())).scalar()
-        total_utilisateur=max(nb_ip,nb_email)
+        total_utilisateur=db.session.query(func.count(Utilisateur.Email.distinct())).scalar()
+        
         
         if 'edit_id' not in session:
            
             if total_actuel>=5: 
                 flash("Limite d'enregistrements atteinte","danger")
                 return redirect (url_for('admin'))
-            if total_utilisateur>=3:
-                deja_connu=Utilisateur.query.filter(
-                    (Utilisateur.Ip==nouvelle_ip) | (Utilisateur.Email==email)
-                ).first()
-                
-                if  not deja_connu:
-                    flash("Limite d'utilisateurs atteinte","danger")
-                    return redirect (url_for('admin'))
+        
+            if  not deja_connu and total_utilisateur>=3:
+                flash("Limite d'utilisateurs atteinte","danger")
+                return redirect (url_for('admin'))
     
         nom=request.form.get("Nom")
         email=request.form.get("Email")
@@ -97,12 +94,10 @@ def formulaire():
             session.pop('edit_data',None)
 
         else: # Nouvel ajout
-            nouvelle_ip=request.remote_addr
             nouveau_id=str(uuid.uuid4())[:8]
             nouveau_utilisateur=Utilisateur(
                 Id=nouveau_id,
                 Nom=nom,
-                Ip=nouvelle_ip,
                 Email=email,
                 Categorie=categorie,
                 Note=note,
@@ -116,7 +111,7 @@ def formulaire():
             if 'mes_ids' not in session:
                 session['mes_ids']=[]
             session['mes_ids'].append(nouveau_id)
-            flash("Utilisateur ajoute a la base PostgreSQL !", "success")
+            flash("Utilisateur ajoute a la base SQLAlchemy !", "success")
         
     
         # On valide l'ecriture dans le fichier .db
@@ -205,9 +200,7 @@ def admin():
     mes_ids = session.get('mes_ids', [])
     utilisateurs=df.to_dict(orient='records')
     Enr=Utilisateur.query.count()
-    u_ip=db.session.query(func.count(Utilisateur.Ip.distinct())).scalar()
-    u_email=db.session.query(func.count(Utilisateur.Email.distinct())).scalar()
-    u=max(u_ip,u_email)
+    u=db.session.query(func.count(Utilisateur.Email.distinct())).scalar()
     return render_template("admin.html", utilisateurs=utilisateurs, mes_ids=mes_ids,Enregistrement=Enr,Utilisateur=u)
 
 @app.route("/charger/<uid>")
@@ -232,7 +225,7 @@ def supprimer(uid):
             # retirer la liste en session
             mes_ids.remove(uid)
             session['mes_ids']= mes_ids
-            flash("Utilisateur supprime avec succes !","danger")
+            flash("Utilisateur supprime avec succes !","attention")
     else:
         flash("Vous n'avez pas l'autorisation de supprimer ces donnees","danger")
     
