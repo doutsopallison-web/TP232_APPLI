@@ -56,11 +56,11 @@ def formulaire():
         
         if 'edit_id' not in session:
            
-            if total_actuel>=5: 
+            if total_actuel>=1000: 
                 flash("Limite d'enregistrements atteinte","danger")
                 return redirect (url_for('admin'))
         
-            if  not deja_connu and total_utilisateur>=3:
+            if  not deja_connu and total_utilisateur>=300:
                 flash("Limite d'utilisateurs atteinte","danger")
                 return redirect (url_for('admin'))
     
