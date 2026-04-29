@@ -17,6 +17,9 @@ db = SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
 
+with app.app_context():
+    db.create_all()
+
 # On définit la structure (le modèle) qui remplace ton init_csv()
 class Utilisateur(db.Model):
     Id = db.Column(db.String(8), primary_key=True)
