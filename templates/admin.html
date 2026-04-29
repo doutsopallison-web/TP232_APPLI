@@ -42,19 +42,29 @@
     </div>
 </div>
 <p></p>
- <div style="position: sticky; top: 0; z-index: 999; background-color: white; padding: 10px; margin-bottom: 20px; border-radius: 0 0 10px 10px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+<div style="position: sticky; top: 0; z-index: 999; background-color: white; padding: 15px; margin-bottom: 20px; border-radius: 0 0 10px 10px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
     
-    <div style="color: #333; font-family: sans-serif; text-align: center;">
-        <strong style="text-transform: uppercase; font-size: 0.7rem; color: #666; display: block;">Enregistrements</strong> 
-        <span style="font-size: 1.2rem; font-weight: bold;">{{ Enregistrement }} / 1000</span>
+    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%; gap: 40px; margin-bottom: 10px;">
+        
+        <div style="text-align: center;">
+            <strong style="text-transform: uppercase; font-size: 0.7rem; color: #666; display: block;">Enregistrements</strong> 
+            <span style="font-size: 1.2rem; font-weight: bold; color: #333;">{{ Enregistrement }} / 1000</span>
+        </div>
+
+        <div style="width: 1px; height: 30px; background-color: #ddd;"></div>
+
+        <div style="text-align: center;">
+            <strong style="text-transform: uppercase; font-size: 0.7rem; color: #666; display: block;">Utilisateurs</strong> 
+            <span style="font-size: 1.2rem; font-weight: bold; color: #333;">{{ Utilisateur }} / 300</span>
+        </div>
     </div>
 
-    <div style="width: 1px; height: 30px; background-color: #ddd;"></div>
-
-    <div style="color: #333; font-family: sans-serif; text-align: center;">
-        <strong style="text-transform: uppercase; font-size: 0.7rem; color: #666; display: block;">Utilisateurs</strong> 
-        <span style="font-size: 1.2rem; font-weight: bold;">{{ Utilisateur }} / 300</span>
+    <div style="text-align: center; border-top: 1px solid #eee; width: 90%; padding-top: 10px;">
+        <small style="color: #28a745; font-weight: bold; text-transform: uppercase;">
+            <i class="fas fa-shield-alt"></i> Sécurité active : Blocage automatique au-delà des limites
+        </small>
     </div>
-
+    
 </div>
+
 {% endblock %}
