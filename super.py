@@ -46,9 +46,19 @@ def formulaire():
     edit_data = session.get('edit_data')
        
     if request.method == "POST":
+        
         # On recupere les donneesde chaque Utilisateur
         total_actuel= Utilisateur.query.count()
         total_utilisateur= db.session.query(func.count(Utilisateur.Ip.distinct())).scalar()
+        
+        if 'edit_id' not in session:
+           
+            if total_actuel>=3: 
+                flash("Limite d'enregistrements atteinte","danger")
+                return redirect (url_for('admin'))
+            if total_utilisateur>=2:
+                flash("Limite d'utilisateurs atteinte","danger")
+                return redirect (url_for('admin'))
     
         nom=request.form.get("Nom")
         categorie=request.form.get("Categorie")
@@ -61,17 +71,6 @@ def formulaire():
         if nb_articles>100:
             flash("La quantite d'articles maximale est de 100","attention")
             nb_articles=100
-           
-        if 'edit_id' not in session:
-           
-            if total_actuel>=3 or total_utilisateur>=2:
-                if total_actuel>=3:
-                    flash("Attention plus d'enregistrement possible la limite est atteinte 1000","Attention")
-                    return redirect(url_for('admin'))
-                if total_utilisateur>=2:
-                    flash("Plus d'utilisateurs autorises","attention")
-                    return redirect(url_for('admin'))
-    
         
         # Modifier les donnees
         if 'edit_id' in session:
